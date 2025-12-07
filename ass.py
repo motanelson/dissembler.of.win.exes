@@ -15,7 +15,8 @@ for h in e:
     if i:
         
         o=h.find(">:")
-        i=False
+        if o>-1:
+            i=False
     if i:
         print(h)
     j=h.find(">:")
