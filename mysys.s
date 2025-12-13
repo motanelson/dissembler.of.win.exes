@@ -1,0 +1,110 @@
+[BITS 16]
+[ORG 0x7C00]          ; Endereço de carregamento do bootloader
+
+start:
+; ---------------------------------------------------------------------
+; Ativar A20 via 8042 Keyboard Controller
+; ---------------------------------------------------------------------
+
+enable_A20:
+    call wait_input_empty
+    mov al,0xD1            ; Command: Write output port
+    out 0x64,al
+    call wait_input_empty
+    mov al,0xDF            ; Enable A20 (bit 1 = 1)
+    out 0x60,al
+    call wait_input_empty
+    
+
+; ---------------------------------------------------------------------
+; Esperar o buffer de entrada do 8042 ficar vazio
+; ---------------------------------------------------------------------
+wait_input_empty:
+    in al,0x64
+    test al,2              ; bit 1 = input buffer full
+    jnz wait_input_empty
+    
+escs:    
+    mov ax,0x12
+    int 0x10
+    mov dx, 0x3C4
+    mov al,2
+    out dx,al
+    inc dx
+    mov al,15
+    out dx,al
+    jmp kernel
+gdt_start:
+
+gdt_null:
+    dd 0x0
+    dd 0x0
+
+gdt_code:
+    dw 0xffff
+    dw 0x0
+    db 0x0
+    db 10011010b
+    db 11001111b
+    db 0x0
+
+gdt_data:
+    dw 0xffff
+    dw 0x0
+    db 0x0
+    db 10010010b
+    db 11001111b
+    db 0x0
+
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start
+    dd gdt_start
+
+CODE_SEG equ gdt_code - gdt_start
+DATA_SEG equ gdt_data - gdt_start
+kernel:
+    mov ax, 0
+    mov ss, ax
+    mov sp, 0xFFFC
+
+    mov ax, 0
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    cli
+    lgdt[gdt_descriptor]
+    mov eax, cr0
+    or eax, 0x1
+    mov cr0, eax
+    jmp CODE_SEG:b32
+
+[bits 32]
+nop 
+
+b32:
+    mov ax, DATA_SEG
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    mov ebp, 0x90000
+    mov esp, ebp
+;start eax ebx ecx edx to enter on program
+    mov eax,0
+    mov ebx,0
+    mov ecx,0xf000
+    mov edx,0
+    mov esi,0
+    mov edi,0
+    
+    jmp coms  ; O programa .com espera começar 
+
+times 510-($-$$) db 0 ; Preencher até 510 bytes
+dw 0xAA55             ; Assinatura do setor de boot
+coms:
