@@ -73,6 +73,7 @@ class FSProcessorApp:
             print(file_path)
             self.execute_command("nasm mysys.s -o /tmp/mysys.o",False)
             #self.execute_command(asas+"-r -b binary -o /tmp/rdfs.o ./rdfs.txt",False)
+            self.execute_command("xxd -i rdfs.txt > rdfs.h",False)
             fff=gcc+f' -c -nostdlib "$1" -o /tmp/kernel.o'.replace("$1",file_path)
             self.execute_command(fff,True)
             self.execute_command(asas+" -o /tmp/boot.o ./boot.s",False)

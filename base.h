@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
+#include "rdfs.h"
+int endss=0;
 #define FONTDATAMAX 2048
 char *rdfs_start;
 #define VGA_SEQ_INDEX 0x3C4
@@ -6122,8 +6124,8 @@ void cats(char *cc,char *ccc) {
 }
 
 char  *starts(){
-    extern char *ramdisk_start;
-    rdfs_start=(char *)"hello.txt|hello world...|filea.txt|same Text";
+    
+    rdfs_start=(char *)rdfs_txt;
     return (char *)rdfs_start;
 
 }
