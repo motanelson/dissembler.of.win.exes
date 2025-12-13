@@ -6057,6 +6057,33 @@ char *strstrs(char *b,char a){
     c=b+indexs;
     return c;
 }
+void printstr(char *cc) {
+   char *p = (char*)cc;
+   int yy=10;
+   char *token = p;
+   int index = 0;
+   int came1=0;
+   char *token2;
+    while (*p) {
+        if (*p == '\n') {
+            *p = 0;  // termina o item
+
+            
+                
+             gputs(10,yy,token);
+             yy=yy+10;
+                  
+            
+
+            index++;
+            token = p + 1;   // próxima secção
+        }
+        p++;
+    }
+    gputs(10,yy,token);
+    yy=yy+10;             
+}
+
 void dirs(char *cc) {
    char *p = (char*)cc;
    int yy=10;
@@ -6078,7 +6105,7 @@ void dirs(char *cc) {
         }
         p++;
     }
-                
+               
 }
 int strcmps(char *cc , char *ccc){
     int index=0;
@@ -6099,7 +6126,7 @@ void cats(char *cc,char *ccc) {
    char *token = p;
    int index = 0;
    int came1=0;
-   char *token2;
+   char *token2="";
     while (*p) {
         if (*p == '|') {
             *p = 0;  // termina o item
@@ -6110,8 +6137,9 @@ void cats(char *cc,char *ccc) {
                
             }else{
                 if (strcmps(token2,ccc)){
-                    gputs(10,yy,token);
-                    yy=yy+10;
+                    printstr(token);
+                   
+
                 }  
             }
 
