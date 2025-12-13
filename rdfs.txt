@@ -3,4 +3,4 @@ line1
 line2
 line3
 line4
-|filea.txt|same Text
+|filea.txt|same Text|
